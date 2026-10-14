@@ -1,0 +1,21 @@
+.control {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  background: var(--surface);
+  color: var(--text);
+  min-height: 44px;
+  width: 100%;
+}
+.control[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  accent-color: var(--primary);
+}
+.control:disabled {
+  opacity: 0.6;
+}
+.control[aria-invalid="true"] {
+  border-color: var(--danger);
+}

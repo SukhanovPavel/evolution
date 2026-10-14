@@ -1,0 +1,10 @@
+.git
+.env*
+.idea
+.next*
+node_modules
+coverage
+playwright-report
+test-results
+tests
+supabase/bootstrap.sql
