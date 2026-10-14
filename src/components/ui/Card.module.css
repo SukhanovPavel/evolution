@@ -1,7 +1,7 @@
 .card {
   padding: var(--space-5);
-  border: 1px solid var(--border);
+  border: 0;
   background: var(--surface);
   border-radius: var(--radius);
-  box-shadow: 0 4px 24px #23423304;
+  box-shadow: 0 4px 24px #23423308;
 }

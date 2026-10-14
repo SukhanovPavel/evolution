@@ -11,6 +11,7 @@ import { browserClient, configured } from "@/lib/supabase/browser";
 import { demoProfile, demoPreferences } from "@/lib/demo";
 import { ru } from "@/i18n/ru";
 import styles from "./App.module.css";
+import { Notifications } from "./Notifications";
 export function SettingsView() {
   const router = useRouter();
   const [message, setMessage] = useState("");
@@ -65,7 +66,27 @@ export function SettingsView() {
     }
   }
   async function logout() {
-    if (configured) await browserClient().auth.signOut();
+    if (configured) {
+      if ("serviceWorker" in navigator) {
+        try {
+          const reg = await navigator.serviceWorker.getRegistration();
+          const sub =
+            reg && "pushManager" in reg
+              ? await reg.pushManager.getSubscription()
+              : null;
+          if (sub) {
+            await sub.unsubscribe();
+            await request("notifications/subscriptions", {
+              method: "DELETE",
+              body: JSON.stringify({ endpoint: sub.endpoint }),
+            });
+          }
+        } catch {
+          setMessage(ru.pushFailed);
+        }
+      }
+      await browserClient().auth.signOut();
+    }
     cache.clear();
     router.push("/");
     router.refresh();
@@ -73,6 +94,7 @@ export function SettingsView() {
   return (
     <div className={styles.stack}>
       <Onboarding settings />
+      <Notifications />
       <Card>
         <h2>{ru.privacy}</h2>
         <div className={styles.form}>

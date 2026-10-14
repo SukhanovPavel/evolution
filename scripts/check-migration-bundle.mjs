@@ -30,6 +30,7 @@ try {
   if (!ready.catalog_ready || !ready.rls_ready || !ready.profile_trigger_ready)
     throw new Error("NOT_READY");
   sql(readFileSync("tests/rls.sql", "utf8").replace(/\\[^\n]+/g, ""));
+  sql(readFileSync("tests/push.sql", "utf8").replace(/\\[^\n]+/g, ""));
   sql(
     `begin;set local role anon;select public.deployment_readiness();rollback;`,
   );

@@ -46,12 +46,12 @@ textarea,
 select {
   max-width: 100%;
 }
-button,
-a,
-input,
-textarea,
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
 select:focus-visible {
-  outline: 3px solid #b49a40;
+  outline: 2px solid var(--primary);
   outline-offset: 3px;
 }
 h1,

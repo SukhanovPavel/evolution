@@ -1,5 +1,5 @@
 .control {
-  border: 1px solid var(--border);
+  border: 1px solid #e6ebe8;
   border-radius: var(--radius-sm);
   padding: 12px;
   background: var(--surface);

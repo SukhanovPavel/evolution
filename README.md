@@ -40,7 +40,7 @@ npm run supabase:status
 npm run test:cloud:rls
 ```
 
-Мигратор отслеживает пять версий и checksums, применяет изменения транзакционно и добавляет seed. Повторный запуск пропускает применённые версии. Не редактируйте применённые миграции: добавляйте новую. `supabase/bootstrap.sql` — подготовленный пакет для SQL Editor. Cloud RLS-тест использует случайные временные UUID и откатывает все записи. `/api/v1/health` проверяет Auth, схему, каталоги и RLS без выдачи личных данных.
+Мигратор отслеживает шесть версий и checksums, применяет изменения транзакционно и добавляет seed. Повторный запуск пропускает применённые версии. Не редактируйте применённые миграции: добавляйте новую. `supabase/bootstrap.sql` — подготовленный пакет для SQL Editor. Cloud RLS-тест использует случайные временные UUID и откатывает все записи. `/api/v1/health` проверяет Auth, схему, каталоги и RLS без выдачи личных данных.
 
 ### Схема и seed через Dashboard
 
@@ -51,7 +51,8 @@ npm run test:cloud:rls
 3. `supabase/migrations/202610140003_preferences.sql`
 4. `supabase/migrations/202610140004_assigned_templates.sql`
 5. `supabase/migrations/202610140005_deployment_readiness.sql`
-6. `supabase/seed.sql`
+6. `supabase/migrations/202610140006_web_push.sql`
+7. `supabase/seed.sql`
 
 Миграции применяются один раз. Seed можно повторять: стабильные UUID и `ON CONFLICT DO NOTHING` сохраняют ссылки и ручные изменения контента. Содержимое `tests/postgres-bootstrap.sql` **никогда не применяйте к Supabase**: это тестовые заглушки схем `auth`/`storage` для отдельного локального PostgreSQL.
 
@@ -175,6 +176,23 @@ EVOLUTION_TEST_DATABASE_URL='postgresql://localhost/evolution_test' node scripts
 
 Они используют Supabase-совместимые тестовые `auth.uid()`/Storage-схемы и проверяют миграции/seed, RLS двух пользователей, недоступность чужих задач, защиту роли, каталог/админа и идемпотентность. Это проверка PostgreSQL, **не проверка реального Supabase Auth/доставки email**. Статус проведённых проверок — в `VERIFICATION.md`.
 
+## Web Push и напоминания
+
+Настройки → Уведомления: разрешите push на устройстве, включите напоминания и сохраните расписание. Доступны питание один раз в день и перерывы каждые 30/60/90/120 минут в выбранные рабочие часы; перерывы можно ограничить буднями. Часовой пояс берётся из профиля. В настройках есть настоящий тестовый push и отключение устройства. При выходе подписка текущего устройства отключается. При боли/болезни или указанных ограничениях вместо разминки предлагается спокойный перерыв. В тексте push нет личных медицинских подробностей.
+
+В production настроены VAPID-ключи, worker credential в Supabase Vault и Supabase Cron каждые 5 минут. Cron вызывает защищённый `/api/v1/notifications/dispatch`; Vercel не требует постоянного процесса или платного frequent Cron. RLS защищает `push_settings` и `push_subscriptions`. У worker только узкие RPC с отдельным секретом, без service-role key. Очередь использует leases, уникальные слоты и до 3 попыток; недействительные подписки удаляются при HTTP 404/410. Доставка на устройство может задержаться или отсутствовать из-за разрешений, сети/OS. Опоздавшие более чем на 15 минут напоминания не накапливаются. Повтор после сбоя возможен; одинаковый notification tag заменяет прежнее уведомление.
+
+Для другого окружения после миграций:
+
+```sh
+node --env-file=.env.local scripts/setup-push.mjs --generate --app-url https://YOUR_DOMAIN
+node --env-file=.env.local scripts/setup-push.mjs
+```
+
+В Vercel Production добавьте `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, серверные `VAPID_PRIVATE_KEY` и `PUSH_WORKER_SECRET`. Не публикуйте private key/worker secret. `scripts/push-vercel-env.mjs` загружает только эти четыре переменные в текущий production-проект команды владельца. Не запускайте его для другого аккаунта без изменения scope. Setup сохраняет приватный hash в закрытой схеме и worker secret в Vault; функция claim не выдаёт данные без корректного секрета. `tests/push.sql` проверяет расписание, RLS, дедупликацию, безопасное восстановление и удаление истёкших подписок транзакционно.
+
+На iPhone/iPad Web Push требует iOS 16.4+ и установки приложения на главный экран; откройте установленное приложение и разрешите уведомления кнопкой. На desktop/Android требуется поддерживающий Push API браузер и HTTPS. [Условия Web Push Apple](https://developer.apple.com/documentation/usernotifications/sending-web-push-notifications-in-web-apps-and-browsers), [Supabase Cron и Vault](https://supabase.com/docs/guides/functions/schedule-functions).
+
 ## PWA
 
 Манифест, оригинальная SVG-иконка и PNG 192/512, HTTPS на Vercel. Service Worker кэширует **только публичные** иконки и offline-страницу. Не кэширует authenticated HTML, API, токены, профиль или health данные. Полного offline-режима и фоновой синхронизации нет. Установка зависит от браузера; на iOS используйте «Поделиться → На экран Домой». Иконки можно пересоздать `node scripts/generate-icons.mjs`; текст fallback — `node --experimental-strip-types scripts/generate-offline.mjs`.
@@ -220,4 +238,4 @@ tests/                 Vitest, SQL and Playwright
 
 Typed transport `createApiTransport({baseUrl,getAccessToken})` уже принимает HTTPS base URL и bearer token provider. Для Capacitor создайте отдельный статический/mobile frontend (например Vite), переиспользуя domain/contracts и typed API client с configurable HTTPS base URL. Next SSR и Route Handlers остаются на Vercel, **не выполняются в WebView**. Supabase native sessions получают access token; API проверяет его сервером и использует scoped bearer Supabase client, не service role. Перед включением WebView настройте CORS allowlist разрешённых app origins, безопасное OS-хранилище refresh token и redirect/deep links. Экранная логика отделена от DB; Server Actions не используются для core flows.
 
-Отложено по ТЗ: native push, Health Connect/Apple Health, камера/AI-анализ еды, внешние AI APIs, публикация в app stores. В MVP хранится предпочтение напоминаний, **доставка не реализована и это указано в UI**. Нет фоновых процессов/локальных файлов для пользовательских данных на Vercel.
+Отложено по ТЗ: native push, Health Connect/Apple Health, камера/AI-анализ еды, внешние AI APIs, публикация в app stores. Web Push добавлен после MVP по запросу владельца; native push остаётся будущей интеграцией. Нет постоянных процессов/локальных файлов для пользовательских данных на Vercel.

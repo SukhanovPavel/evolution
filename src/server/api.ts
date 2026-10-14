@@ -17,6 +17,12 @@ import {
 import { progressSummary } from "@/domain/progress";
 import type { Plan } from "@/domain/plan";
 import { localDate, addDays } from "@/domain/dates";
+import {
+  defaultNotificationSettings,
+  notificationSettingsSchema,
+  subscriptionSchema,
+} from "@/domain/notifications";
+import { pushConfigured, sendPush } from "@/server/push";
 export async function handle(
   req: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
@@ -49,6 +55,89 @@ export async function handle(
     const id = user.id;
     const repo = new Repository(client, id);
     const query = req.nextUrl.searchParams;
+    if (path === "notifications/settings" && method === "GET") {
+      const settings = checked(
+        await client
+          .from("push_settings")
+          .select("*")
+          .eq("user_id", id)
+          .maybeSingle(),
+      );
+      const devices = checked(
+        await client.from("push_subscriptions").select("id").eq("user_id", id),
+      );
+      return ok({
+        settings: settings
+          ? {
+              ...settings,
+              food_time: settings.food_time.slice(0, 5),
+              work_start: settings.work_start.slice(0, 5),
+              work_end: settings.work_end.slice(0, 5),
+            }
+          : defaultNotificationSettings,
+        configured: pushConfigured(),
+        deviceCount: devices?.length ?? 0,
+        publicKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? null,
+      });
+    }
+    if (path === "notifications/settings" && method === "PUT") {
+      const value = notificationSettingsSchema.parse(await req.json());
+      if (value.enabled && !pushConfigured())
+        throw new HttpError(503, "PUSH_NOT_CONFIGURED");
+      checked(
+        await client.from("push_settings").upsert({ ...value, user_id: id }),
+      );
+      return ok(value);
+    }
+    if (path === "notifications/subscriptions" && method === "POST") {
+      if (!pushConfigured()) throw new HttpError(503, "PUSH_NOT_CONFIGURED");
+      const sub = subscriptionSchema.parse(await req.json());
+      return ok({
+        id: checked(
+          await client.rpc("register_push_subscription", {
+            p_endpoint: sub.endpoint,
+            p_p256dh: sub.keys.p256dh,
+            p_auth: sub.keys.auth,
+          }),
+        ),
+      });
+    }
+    if (path === "notifications/subscriptions" && method === "DELETE") {
+      const { endpoint } = z
+        .object({ endpoint: z.string().max(2048) })
+        .parse(await req.json());
+      checked(
+        await client
+          .from("push_subscriptions")
+          .delete()
+          .eq("user_id", id)
+          .eq("endpoint", endpoint),
+      );
+      return ok({ removed: true });
+    }
+    if (path === "notifications/test" && method === "POST") {
+      const { endpoint } = z
+        .object({ endpoint: z.string().max(2048) })
+        .parse(await req.json());
+      const sub = checked(
+        await client
+          .from("push_subscriptions")
+          .select("endpoint,p256dh,auth")
+          .eq("user_id", id)
+          .eq("endpoint", endpoint)
+          .maybeSingle(),
+      );
+      if (!sub) throw new HttpError(404, "NOT_FOUND");
+      await sendPush(
+        {
+          endpoint: sub.endpoint,
+          keys: { p256dh: sub.p256dh, auth: sub.auth },
+        },
+        "test",
+        "test",
+      );
+      return ok({ sent: true });
+    }
     const parts = path.split("/");
     const limit = z.coerce
       .number()
@@ -413,6 +502,8 @@ export async function handle(
         "profiles",
         "user_preferences",
         "notification_preferences",
+        "push_settings",
+        "push_subscriptions",
         "user_programs",
         "daily_plans",
         "daily_tasks",
@@ -433,9 +524,11 @@ export async function handle(
                 .order(
                   table === "user_recipe_favorites"
                     ? "recipe_id"
-                    : ["user_preferences", "notification_preferences"].includes(
-                          table,
-                        )
+                    : [
+                          "user_preferences",
+                          "notification_preferences",
+                          "push_settings",
+                        ].includes(table)
                       ? "user_id"
                       : "id",
                 )

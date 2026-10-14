@@ -256,20 +256,7 @@ function Editor({
                   {ru.coldSafety}
                 </label>
               )}
-              <label>
-                {ru.time}
-                <Input
-                  type="time"
-                  {...register("preferences.preferred_local_time")}
-                />
-              </label>
-              <label className={styles.checkbox}>
-                <Input
-                  type="checkbox"
-                  {...register("preferences.reminders_enabled")}
-                />
-                {ru.reminders}
-              </label>
+              <p className={styles.muted}>{ru.reminders}</p>
             </>
           )}
           {Object.keys(errors).length > 0 && (

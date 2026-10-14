@@ -4,13 +4,18 @@ import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 const calls = vi.hoisted(() => ({
   reset: vi.fn(async () => ({ error: null })),
   update: vi.fn(async () => ({ error: null })),
+  resend: vi.fn(async () => ({ error: null })),
   replace: vi.fn(),
   refresh: vi.fn(),
 }));
 vi.mock("@/lib/supabase/browser", () => ({
   configured: true,
   browserClient: () => ({
-    auth: { resetPasswordForEmail: calls.reset, updateUser: calls.update },
+    auth: {
+      resetPasswordForEmail: calls.reset,
+      updateUser: calls.update,
+      resend: calls.resend,
+    },
   }),
 }));
 vi.mock("next/navigation", () => ({
@@ -23,6 +28,26 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 describe("password recovery UI", () => {
+  it("resends confirmation to the configured production callback", async () => {
+    vi.stubEnv("NEXT_PUBLIC_APP_URL", "https://evolution-azure.vercel.app");
+    render(<AuthForm mode="signup" />);
+    fireEvent.change(screen.getByLabelText("Электронная почта"), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Отправить подтверждение повторно" }),
+    );
+    await vi.waitFor(() =>
+      expect(calls.resend).toHaveBeenCalledWith({
+        type: "signup",
+        email: "test@example.com",
+        options: {
+          emailRedirectTo: "https://evolution-azure.vercel.app/auth/callback",
+        },
+      }),
+    );
+    vi.unstubAllEnvs();
+  });
   it("submits an email without a hidden fake password", async () => {
     render(<AuthForm mode="forgot-password" />);
     fireEvent.change(screen.getByLabelText("Электронная почта"), {

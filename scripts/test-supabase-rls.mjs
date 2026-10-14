@@ -6,7 +6,7 @@ if (!process.env.SUPABASE_DB_URL) {
   console.error("SUPABASE_DB_URL_REQUIRED");
   process.exit(1);
 }
-let sql = readFileSync("tests/rls.sql", "utf8");
+let sql = readFileSync("tests/rls.sql", "utf8") + "\n" + readFileSync("tests/push.sql", "utf8");
 for (const old of [
   "11111111-1111-4111-8111-111111111111",
   "22222222-2222-4222-8222-222222222222",

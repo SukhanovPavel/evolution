@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { serverClient } from "@/lib/supabase/server";
+import { appOrigin } from "@/lib/app-origin";
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
   const recovery =
@@ -9,8 +10,13 @@ export async function GET(request: NextRequest) {
     const { error } = await client.auth.exchangeCodeForSession(code);
     if (!error)
       return NextResponse.redirect(
-        new URL(recovery ? "/reset-password" : "/today", request.url),
+        new URL(
+          recovery ? "/reset-password" : "/today",
+          appOrigin(request.url),
+        ),
       );
   }
-  return NextResponse.redirect(new URL("/login?error=callback", request.url));
+  return NextResponse.redirect(
+    new URL("/login?error=callback", appOrigin(request.url)),
+  );
 }

@@ -11,6 +11,7 @@ import { ru } from "@/i18n/ru";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
 import styles from "./App.module.css";
+import { appOrigin } from "@/lib/app-origin";
 
 export function AuthForm({ mode }: { mode: AuthMode }) {
   const router = useRouter();
@@ -20,6 +21,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(authSchema(mode)),
@@ -34,7 +36,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         return;
       }
       const client = browserClient();
-      const redirect = `${location.origin}/auth/callback`;
+      const redirect = `${appOrigin(location.origin)}/auth/callback`;
       const result =
         mode === "login"
           ? await client.auth.signInWithPassword(v)
@@ -71,6 +73,31 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         router.replace(mode === "signup" ? "/onboarding" : "/today");
         router.refresh();
       }
+    } catch {
+      setMessage(ru.error);
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function resend() {
+    const email = getValues("email");
+    if (
+      !configured ||
+      !authSchema("forgot-password").safeParse({ email, password: "" }).success
+    ) {
+      setMessage(ru.invalidEmail);
+      return;
+    }
+    setBusy(true);
+    try {
+      const { error } = await browserClient().auth.resend({
+        type: "signup",
+        email,
+        options: {
+          emailRedirectTo: `${appOrigin(location.origin)}/auth/callback`,
+        },
+      });
+      setMessage(error ? ru.authRateLimit : ru.confirmEmail);
     } catch {
       setMessage(ru.error);
     } finally {
@@ -131,6 +158,11 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
               (params.get("error") === "callback" ? ru.authCallbackError : "")}
           </p>
         </form>
+        {mode === "signup" && (
+          <Button onClick={resend} disabled={busy}>
+            {ru.resendConfirmation}
+          </Button>
+        )}
         <div className={styles.links}>
           <Link href="/login">{ru.login}</Link>
           <Link href="/signup">{ru.signup}</Link>
