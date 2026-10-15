@@ -55,3 +55,8 @@ Production callback закреплён через NEXT_PUBLIC_APP_URL, доба�
 ## 15 октября 2026: фотографии рецептов
 
 Сгенерированы и визуально проверены 24 изображения, сохранены WebP 768×512 (суммарно 1 703 536 байт). `npm run check`: lint/typecheck, 61 тест в 12 файлах, production build прошли. Demo Playwright: 14 passed, 12 skipped (connected/smoke в demo-режиме). На mobile/desktop проверены все 24 файла HTTP 200 с image/webp и фактическая загрузка изображения в каталоге и модальном RecipeDetail без горизонтального переполнения. Unit/API тесты проверяют соответствие изображений рецептам, приоритет custom image_url, скрытие устаревшего изображения после изменений состава/шагов и абсолютный URL в authenticated API. Изменения локальные, деплой не выполнялся.
+
+
+## 15 октября 2026: production после публикации
+
+Коммит приложения `224449e` отправлен в main, Vercel `evolution-qsvswgw48-sukhanovpavels-projects.vercel.app` Ready и назначен основному alias. Production Supabase: 7 миграций и seed применены, readiness true, cloud RLS/push SQL прошли с откатом тестовых записей. На https://evolution-azure.vercel.app прошли 8 Playwright smoke-тестов mobile/desktop; все 24 изображения проверены по HTTP 200/MIME/WEBP-сигнатуре (1 703 536 байт); health HTTP 200, ready=true. Полный connected E2E с аккаунтами и настоящая доставка писем не запускались.

@@ -29,8 +29,8 @@
 - Ветка: `main`; origin использует SSH `git@github.com:SukhanovPavel/evolution.git`.
 - Vercel: проект `evolution`, команда `sukhanovpavels-projects`, связан с GitHub. Push в `main` запускает production-деплой.
 - Supabase project ref: `qqrfbudrmsisddltvtbf`.
-- Последний опубликованный коммит: `0c06b98` — Web Push, callback и исправление рамок. Предыдущий `641083c` — полноценный MVP.
-- Последний проверенный deployment: `evolution-q8ku8y1q3-sukhanovpavels-projects.vercel.app`, статус Ready, с production alias выше.
+- Последний опубликованный коммит приложения: `224449e` — пояснения check-in, подбор силовых комплексов, мобильная программа и 24 изображения рецептов. Предыдущий `0c06b98` — Web Push, callback и исправление рамок.
+- Последний проверенный deployment: `evolution-qsvswgw48-sukhanovpavels-projects.vercel.app`, статус Ready, с production alias выше.
 
 Проект имеет собственный `.git`. Ранее до его подключения обнаруживался родительский репозиторий домашней папки; не выполняйте Git-команды из домашнего каталога. История initial commit репозитория и LICENSE сохранены. HTTPS push не имел авторизации, SSH push с существующим доступом сработал.
 
@@ -83,7 +83,7 @@ Supabase Cron `evolution-push` активен с `*/5 * * * *`, вызывает
 - `SUPABASE_DB_URL` — Session pooler PostgreSQL URI; использовался для миграций через psql. Прямой IPv6-host был недоступен. DB password не нужен Vercel runtime и был удалён из окружений Vercel.
 - Локально имеются VAPID pair и worker secret; не генерировать заново без причины. Смена VAPID pair потребует переподключения устройств.
 - `SUPABASE_SERVICE_ROLE_KEY` и `SUPABASE_ACCESS_TOKEN` на последней проверке отсутствовали. Удаление Auth-аккаунта без server key возвращает `503 ACCOUNT_DELETION_NOT_CONFIGURED`.
-- Применены миграции 001–006 и seed. Мигратор хранит историю и checksums; **не редактировать применённые миграции**, добавлять следующую. `deployment_readiness()` пока сообщает версию базовой схемы 5 — это не означает, что миграция 006 не применена.
+- Применены миграции 001–007 и seed. Мигратор хранит историю и checksums; **не редактировать применённые миграции**, добавлять следующую. `deployment_readiness()` пока сообщает версию базовой схемы 5 — это не означает, что миграция 006 не применена.
 - `supabase/bootstrap.sql` генерируется через `npm run db:prepare`; не редактировать вручную. `tests/postgres-bootstrap.sql` — только заглушки для временной локальной БД, не применять к Supabase.
 - `scripts/setup-push.mjs --generate` сохраняет/создаёт ключи в `.env.local`; обычный запуск настраивает Vault/Cron. Это административные операции, не выполнять заново при обычном запуске приложения.
 - `scripts/push-vercel-env.mjs` загружает только четыре разрешённые push/APP_URL переменные в production-проект владельца. Не использовать автоматически для другого аккаунта/окружения.
@@ -128,7 +128,7 @@ EVOLUTION_TEST_BASE_URL=https://evolution-azure.vercel.app npx playwright test t
 Этот файл и строка в AGENTS.md созданы локально по просьбе владельца. Их можно сохранить в обычном следующем коммите; закрытие IDE не удалит изменения.
 
 
-## Локальные изменения 15 октября: оценки дня, тренировки и программа
+## Изменения 15 октября: оценки дня, тренировки и программа
 
 Миграция 007 применена к production Supabase 15 октября по запросу владельца на push/deploy. Код подготовлен к публикации в main; актуальный итог деплоя указан в последнем разделе ниже.
 
@@ -142,10 +142,10 @@ EVOLUTION_TEST_BASE_URL=https://evolution-azure.vercel.app npx playwright test t
 - Проверено в этой сессии: `npm run check` (lint, typecheck, 56 тестов, production build); 12 demo Playwright на mobile 375×812 и desktop (остальные 12 connected/smoke по режиму пропущены); чистая и повторная локальная SQL-установка, история миграций, readiness, RLS и push SQL через `check-migration-bundle.mjs`. После браузерных тестов скорректирован приоритет чередования силовых/других дней; повторный `npm run check` прошёл.
 - Изображения рецептов: затем по запросу владельца сгенерированы и подключены; подробности ниже.
 
-Для публикации этих изменений требуется применить миграцию 007 к целевому Supabase и опубликовать код; не считать локальные изменения уже доступными на production.
+Миграция 007 применена, код опубликован; итоговые проверки production — в последнем разделе.
 
 
-## Локальные изменения 15 октября: изображения 24 рецептов
+## Изменения 15 октября: изображения 24 рецептов
 
 Все 24 фотографии сгенерированы встроенным image_gen по реальным ингредиентам и инструкциям. Визуально проверена вся серия: светлая керамика, нейтральный бежевый фон, мягкий свет, готовые блюда. Итоговые файлы: `public/images/recipes/recipe-1.webp` … `recipe-24.webp`, 768×512, общий размер 1 703 536 байт (~1,7 MB). Исходники генератора остаются вне репозитория; все используемые финальные файлы находятся в проекте. Промпты сохранены в `docs/recipe-image-generation.json`.
 
@@ -159,3 +159,8 @@ EVOLUTION_TEST_BASE_URL=https://evolution-azure.vercel.app npx playwright test t
 ## Публикация 15 октября: подготовка
 
 Владелец явно запросил push и deploy всех изменений. Перед публикацией повторно прошёл `npm run check` (61 тест, lint/typecheck/build); проверены целевой Supabase ref, ветка main и Vercel project. Просканированы отправляемые файлы на реальные секреты, совпадений нет. `npm run db:migrate` применил/согласовал 7 миграций и seed. Production `supabase:status`: auth HTTP 200, readiness catalog/RLS/profile trigger true; schema_version по-прежнему 5 для базовой readiness-функции. `npm run test:cloud:rls` прошёл с откатом тестовых записей. Далее push main и контроль production deployment.
+
+
+## Публикация 15 октября: завершена
+
+`224449e` отправлен в GitHub main. Автоматический Vercel production deployment `evolution-qsvswgw48-sukhanovpavels-projects.vercel.app` получил Ready и alias https://evolution-azure.vercel.app. На production прошли 8 Playwright smoke-тестов (mobile/desktop): auth UI, API isolation, health, push worker protection, HTTPS callback/focus. Все 24 WebP отдаются HTTP 200 с корректным MIME и WEBP-сигнатурой, общий размер 1 703 536 байт. Health HTTP 200, ready=true. Миграция 007 и seed применены до деплоя; cloud RLS/push SQL прошли с откатом тестовых записей. Полный connected E2E с пользовательскими аккаунтами не запускался; настоящая отправка писем не проверялась. Итоги дополнительно фиксируются отдельным documentation-коммитом без изменения кода приложения.
