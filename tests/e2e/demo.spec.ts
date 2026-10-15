@@ -84,3 +84,82 @@ test("PWA fallback caches only public assets", async ({ page, context }) => {
   await page.goto("/today");
   await expect(page.getByText(/Сейчас вы без сети/)).toBeVisible();
 });
+
+test("program day expands across the week and closes the previous day", async ({
+  page,
+}) => {
+  await page.goto("/program");
+  const first = page.getByRole("button", { name: /^День 1(?: •)?$/ });
+  const second = page.getByRole("button", { name: /^День 2(?: •)?$/ });
+  await first.click();
+  await expect(first).toHaveAttribute("aria-expanded", "true");
+  const panel = page.locator("#program-week-0");
+  await expect(panel).toContainText("приседания и отжимания");
+  const width = await panel.evaluate((el) => el.getBoundingClientRect().width);
+  const cardWidth = await panel.evaluate(
+    (el) => el.parentElement!.getBoundingClientRect().width,
+  );
+  expect(width / cardWidth).toBeGreaterThan(0.75);
+  await second.click();
+  await expect(first).toHaveAttribute("aria-expanded", "false");
+  await expect(second).toHaveAttribute("aria-expanded", "true");
+  await expect(panel.getByRole("heading")).toHaveText("День 2");
+  await page.getByRole("button", { name: /^День 8(?: •)?$/ }).click();
+  await expect(panel).toHaveCount(0);
+  await expect(page.locator("#program-week-1")).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});
+
+test("check-in explains the meaning and direction of each scale", async ({
+  page,
+}) => {
+  await page.goto("/today");
+  await expect(page.locator("#energy-help")).toContainText("в течение дня");
+  await expect(page.locator("#difficulty-help")).toContainText(
+    "задания сегодня",
+  );
+  await expect(page.locator("#mood-help")).toContainText("настроение за день");
+  await expect(
+    page.getByRole("combobox", { name: "Энергия", exact: true }),
+  ).toHaveAttribute("aria-describedby", "energy-help");
+});
+
+test("recipe photography loads in the catalog and recipe details", async ({
+  page,
+  request,
+}) => {
+  for (let i = 1; i <= 24; i++) {
+    const response = await request.get(`/images/recipes/recipe-${i}.webp`);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain("image/webp");
+  }
+  await page.goto("/nutrition");
+  await page.getByRole("textbox", { name: "Поиск" }).fill("Овсянка");
+  const photo = page.getByRole("img", {
+    name: "Овсянка с яблоком",
+    exact: true,
+  });
+  await expect(photo).toBeVisible();
+  await expect
+    .poll(() => photo.evaluate((el) => (el as HTMLImageElement).naturalWidth))
+    .toBeGreaterThan(0);
+  await page.getByRole("button", { name: "Подробнее", exact: true }).click();
+  const detailPhoto = page
+    .getByRole("dialog")
+    .getByRole("img", { name: "Овсянка с яблоком", exact: true });
+  await expect(detailPhoto).toBeVisible();
+  await expect
+    .poll(() =>
+      detailPhoto.evaluate((el) => (el as HTMLImageElement).naturalWidth),
+    )
+    .toBeGreaterThan(0);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});

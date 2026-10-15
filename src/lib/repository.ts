@@ -1,7 +1,13 @@
 import "server-only";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { checked, HttpError } from "./http";
-import { generatePlan, Plan, Program, Catalog } from "@/domain/plan";
+import {
+  generatePlan,
+  previewProgram,
+  Plan,
+  Program,
+  Catalog,
+} from "@/domain/plan";
 import { Recipe, Exercise, Routine, TemplateTask } from "@/domain/content";
 import { Preferences, Checkin } from "@/domain/schemas";
 import { localDate, addDays, dayNumber, programExpired } from "@/domain/dates";
@@ -30,7 +36,7 @@ export class Repository {
         .maybeSingle(),
     ) as Preferences | null;
   }
-  async program() {
+  async program(preview = true) {
     const p = checked(
       await this.client
         .from("user_programs")
@@ -62,7 +68,28 @@ export class Repository {
         .order("day_number")
         .order("sort_order"),
     );
-    return { ...p, tasks } as Program;
+    if (!preview) return { ...p, tasks } as Program;
+    const preferences = await this.preferences();
+    if (!preferences) return { ...p, tasks } as Program;
+    const [recipes, exercises, routines, items] = await Promise.all([
+      this.client.from("recipes").select("*").eq("active", true),
+      this.client.from("exercises").select("*").eq("active", true),
+      this.client.from("routines").select("*").eq("active", true),
+      this.client.from("routine_exercises").select("*"),
+    ]);
+    return {
+      ...p,
+      tasks: previewProgram({
+        preferences,
+        templates: tasks as TemplateTask[],
+        catalog: {
+          recipes: checked(recipes),
+          exercises: checked(exercises),
+          routines: checked(routines),
+          routine_exercises: checked(items),
+        } as Catalog,
+      }),
+    } as Program;
   }
   async plan(date?: string) {
     const profile = await this.profile();
@@ -79,7 +106,7 @@ export class Repository {
     ) as Plan | null;
     if (plan || requested !== today) return plan;
     const preferences = await this.preferences(),
-      program = await this.program();
+      program = await this.program(false);
     if (!preferences || !program)
       throw new HttpError(409, "ONBOARDING_REQUIRED");
     if (program.status !== "active")

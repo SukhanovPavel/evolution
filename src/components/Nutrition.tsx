@@ -15,6 +15,7 @@ import { Button } from "./ui/Button";
 import { Modal } from "./Modal";
 import { RecipeDetail } from "./ContentDetail";
 import { QueryState } from "./QueryState";
+import { RecipeImage } from "./RecipeImage";
 import styles from "./App.module.css";
 export function Nutrition() {
   const [search, setSearch] = useState("");
@@ -145,6 +146,7 @@ export function Nutrition() {
       <div className={styles.grid}>
         {recipes.map((recipe) => (
           <Card key={recipe.id}>
+            <RecipeImage recipe={recipe} />
             <span className={styles.tag}>
               {recipe.prep_minutes} {ru.minutes}
             </span>

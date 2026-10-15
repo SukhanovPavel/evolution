@@ -57,6 +57,8 @@ export function safeExercises(
     (e): e is Exercise =>
       Boolean(e) &&
       e!.active &&
+      (preferences.activity_level === "intermediate" ||
+        e!.difficulty === "beginner") &&
       !preferences.excluded_exercises.some(
         (v) =>
           v.toLowerCase() === e!.slug ||
@@ -115,6 +117,7 @@ export function generatePlan(input: {
   const routines = catalog.routines.filter(
     (r) =>
       r.active &&
+      (p.activity_level === "intermediate" || r.difficulty === "beginner") &&
       catalog.routine_exercises.some((i) => i.routine_id === r.id) &&
       catalog.routine_exercises
         .filter((i) => i.routine_id === r.id)
@@ -170,33 +173,52 @@ export function generatePlan(input: {
     add("recovery", ru.plan.recoveryTitle, ru.plan.recoveryDescription, 1);
   else {
     const maximum = Math.max(1, remaining - 2);
-    const preferred = p.goals.includes("flexibility")
-      ? "stretching"
-      : "activity";
-    const baseline = p.activity_level === "intermediate" ? 8 : 5;
+    // Alternate training and lighter movement; walking is one part of a mixed program.
+    const walkingDay = !low && p.goals.includes("walking") && day % 3 === 0;
+    const preferred =
+      p.goals.includes("flexibility") && day % 2 === 0
+        ? "stretching"
+        : "activity";
+    const baseline = p.activity_level === "intermediate" ? 12 : 6;
     const target = low ? 2 : easy ? Math.min(maximum, baseline + 1) : baseline;
     const candidates = routines.filter(
       (r) =>
         r.category === preferred &&
         r.estimated_minutes <= maximum &&
-        (!low || r.estimated_minutes <= target) &&
-        (!easy || r.estimated_minutes <= baseline + 1),
+        r.estimated_minutes <= target,
     );
-    const routine = !p.goals.includes("walking")
-      ? candidates.sort(
-          (a, b) =>
-            Math.abs(a.estimated_minutes - target) -
-            Math.abs(b.estimated_minutes - target),
-        )[0]
+    const strengthDay = preferred === "activity" && day % 2 === 1;
+    const ranked = candidates.sort((a, b) => {
+      const priority = (r: Routine) =>
+        r.slug.startsWith("strength-") === strengthDay ? 0 : 1;
+      return (
+        priority(a) - priority(b) ||
+        Math.abs(a.estimated_minutes - target) -
+          Math.abs(b.estimated_minutes - target) ||
+        a.id.localeCompare(b.id)
+      );
+    });
+    const best = ranked[0];
+    const similar = ranked.filter(
+      (r) =>
+        best &&
+        (strengthDay && r.slug.startsWith("strength-")) ===
+          (strengthDay && best.slug.startsWith("strength-")) &&
+        r.estimated_minutes === best.estimated_minutes,
+    );
+    const routine = !walkingDay
+      ? similar[(day - 1) % Math.max(1, similar.length)]
       : undefined;
-    const exercise =
-      (p.goals.includes("walking")
-        ? exercises.find((e) => e.slug === "walk")
-        : undefined) ?? exercises.find((e) => e.category === preferred);
+    const fallback = exercises.filter((e) => e.category === preferred);
+    const exercise = walkingDay
+      ? exercises.find((e) => e.slug === "walk")
+      : low
+        ? exercises.find((e) => e.slug === "march")
+        : fallback[(day - 1) % Math.max(1, fallback.length)];
     const template = source.find((t) => t.task_type === "activity");
     if (routine)
       add(
-        "activity",
+        preferred,
         routine.title,
         ru.plan.movementDescription,
         routine.estimated_minutes,
@@ -224,7 +246,8 @@ export function generatePlan(input: {
         1,
       );
   }
-  const stretch = exercises.find((e) => e.category === "stretching");
+  const stretches = exercises.filter((e) => e.category === "stretching");
+  const stretch = stretches[(day - 1) % Math.max(1, stretches.length)];
   if (!warning && stretch)
     add(
       "stretching",
@@ -240,4 +263,35 @@ export function generatePlan(input: {
   if (easy && !recovery && p.cold_opt_in && p.cold_safety_ack)
     add("recovery", ru.plan.coldTitle, ru.plan.coldDescription, 0);
   return { adaptation_reason: reason, tasks };
+}
+
+/** Preview uses the same selection rules; check-ins can change the actual daily plan. */
+export function previewProgram(input: {
+  preferences: Preferences;
+  templates: TemplateTask[];
+  catalog: Catalog;
+}): TemplateTask[] {
+  return Array.from({ length: 30 }, (_, i) => {
+    const day = i + 1;
+    return generatePlan({
+      ...input,
+      day,
+      checkins: [],
+      recentCompletion: 0,
+    }).tasks.map((t) => ({
+      id: `preview-${day}-${t.sort_order}`,
+      program_template_id: input.templates[0]?.program_template_id ?? "",
+      day_number: day,
+      task_type: t.category,
+      payload: {
+        title: t.title,
+        description: t.description,
+        reference_type:
+          t.reference_type as TemplateTask["payload"]["reference_type"],
+        reference_id: t.reference_id,
+      },
+      estimated_minutes: t.estimated_minutes,
+      sort_order: t.sort_order,
+    }));
+  }).flat();
 }

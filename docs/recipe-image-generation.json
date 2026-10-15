@@ -1,0 +1,150 @@
+{
+  "tool": "Built-in image_gen",
+  "style": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. ",
+  "recipes": [
+    {
+      "slug": "recipe-1",
+      "title": "Овсянка с яблоком",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Subject: cooked oatmeal made only with rolled oats and water, topped with fresh chopped apple including red skin. No milk, cinnamon, nuts, berries, honey or other ingredients. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only.",
+      "file": "public/images/recipes/recipe-1.webp"
+    },
+    {
+      "slug": "recipe-2",
+      "title": "Гречка с грибами",
+      "prompt": "undefinedSubject: Гречка с грибами. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Гречка, Шампиньоны, Лук, Масло. Preparation: Отварите гречку по инструкции; Вымойте и нарежьте грибы и лук; Потушите их до готовности и соедините с гречкой. Depict precisely this finished recipe, no additional food.",
+      "file": "public/images/recipes/recipe-2.webp"
+    },
+    {
+      "slug": "recipe-3",
+      "title": "Чечевичный суп",
+      "prompt": "undefinedSubject: Чечевичный суп. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Красная чечевица, Морковь, Вода, Томат. Preparation: Промойте чечевицу; Нарежьте овощи; Варите всё 20 минут до мягкости. Depict precisely this finished recipe, no additional food.",
+      "file": "public/images/recipes/recipe-3.webp"
+    },
+    {
+      "slug": "recipe-4",
+      "title": "Нут с овощами",
+      "prompt": "undefinedSubject: Нут с овощами. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Нут консервированный, Огурец, Томат, Масло. Preparation: Промойте консервированный нут; Вымойте и нарежьте овощи; Смешайте с маслом. Depict precisely this finished recipe, no additional food.",
+      "file": "public/images/recipes/recipe-4.webp"
+    },
+    {
+      "slug": "recipe-5",
+      "title": "Рис с фасолью",
+      "prompt": "undefinedSubject: Рис с фасолью. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Рис, Фасоль консервированная, Перец. Preparation: Сварите рис; Промойте фасоль и нарежьте вымытый перец; Прогрейте фасоль с перцем и смешайте. Depict precisely this finished recipe, no additional food.",
+      "file": "public/images/recipes/recipe-5.webp"
+    },
+    {
+      "slug": "recipe-6",
+      "title": "Тофу с брокколи",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Тофу с брокколи. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Тофу, Брокколи, Масло. Preparation: Разделите брокколи на соцветия и вымойте; Готовьте на пару до мягкости; Прогрейте нарезанный тофу и подайте вместе. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-6.webp"
+    },
+    {
+      "slug": "recipe-7",
+      "title": "Картофель с зеленью",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Картофель с зеленью. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Картофель, Укроп, Масло. Preparation: Вымойте картофель; Отварите до полной готовности; Добавьте вымытый укроп и масло. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-7.webp"
+    },
+    {
+      "slug": "recipe-8",
+      "title": "Паста с томатами",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Паста с томатами. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Паста цельнозерновая, Томаты, Чеснок. Preparation: Сварите пасту по инструкции; Потушите вымытые томаты с чесноком; Соедините и прогрейте. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-8.webp"
+    },
+    {
+      "slug": "recipe-9",
+      "title": "Хумус с хлебом",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Хумус с хлебом. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Нут консервированный, Тахини, Лимонный сок, Хлеб. Preparation: Промойте нут; Измельчите с тахини и соком, добавляя воду; Подайте с хлебом. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-9.webp"
+    },
+    {
+      "slug": "recipe-10",
+      "title": "Тыквенный суп",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Тыквенный суп. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Тыква, Морковь, Вода, Семечки тыквы. Preparation: Очистите и нарежьте овощи; Варите до мягкости; Измельчите и посыпьте семечками. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-10.webp"
+    },
+    {
+      "slug": "recipe-11",
+      "title": "Булгур с горошком",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Булгур с горошком. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Булгур, Горошек замороженный, Морковь. Preparation: Сварите булгур; Отдельно проварите горошек и морковь; Смешайте готовые продукты. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-11.webp"
+    },
+    {
+      "slug": "recipe-12",
+      "title": "Фасолевый паштет",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Фасолевый паштет. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Фасоль консервированная, Масло, Лимонный сок. Preparation: Промойте готовую фасоль; Измельчите с маслом и соком; Добавьте немного воды до мягкой текстуры. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-12.webp"
+    },
+    {
+      "slug": "recipe-13",
+      "title": "Салат с яйцом",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Салат с яйцом. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Яйцо, Огурец, Листья салата. Preparation: Сварите яйца до твёрдого желтка; Вымойте листья и огурец; Нарежьте яйца и смешайте. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-13.webp"
+    },
+    {
+      "slug": "recipe-14",
+      "title": "Рыба с картофелем",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Рыба с картофелем. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Филе рыбы, Картофель, Масло. Preparation: Очистите и нарежьте картофель; Запеките картофель и рыбу до полной готовности; Проверьте отсутствие костей и подайте. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-14.webp"
+    },
+    {
+      "slug": "recipe-15",
+      "title": "Йогурт с ягодами",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Йогурт с ягодами. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Йогурт натуральный, Ягоды, Овсяные хлопья. Preparation: Вымойте свежие ягоды; замороженные обработайте по упаковке; Смешайте с йогуртом; Добавьте хлопья. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-15.webp"
+    },
+    {
+      "slug": "recipe-16",
+      "title": "Курица с гречкой",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Курица с гречкой. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Куриное филе, Гречка, Морковь. Preparation: Сварите гречку; Отдельно потушите курицу с морковью до полной готовности; Используйте отдельную доску для сырой птицы. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-16.webp"
+    },
+    {
+      "slug": "recipe-17",
+      "title": "Огуречный салат",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Огуречный салат. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Огурец, Томат, Укроп, Масло. Preparation: Тщательно вымойте овощи и зелень; Нарежьте удобными кусочками; Заправьте маслом перед подачей. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-17.webp"
+    },
+    {
+      "slug": "recipe-18",
+      "title": "Морковь с яблоком",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Морковь с яблоком. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Морковь, Яблоко, Лимонный сок. Preparation: Вымойте и очистите морковь; Вымойте яблоко; Натрите и добавьте сок. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-18.webp"
+    },
+    {
+      "slug": "recipe-19",
+      "title": "Салат из капусты",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Салат из капусты. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Капуста, Огурец, Масло. Preparation: Снимите наружные листья капусты и вымойте; Тонко нашинкуйте капусту и огурец; Смешайте с маслом. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-19.webp"
+    },
+    {
+      "slug": "recipe-20",
+      "title": "Фруктовая тарелка",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Фруктовая тарелка. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Груша, Яблоко, Апельсин. Preparation: Вымойте все фрукты; Очистите апельсин и удалите семена; Нарежьте и подайте как часть обычного приёма пищи. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-20.webp"
+    },
+    {
+      "slug": "recipe-21",
+      "title": "Авокадо с томатами",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Авокадо с томатами. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Авокадо, Томат, Лимонный сок. Preparation: Вымойте плоды перед разрезанием; Извлеките мякоть авокадо и нарежьте томаты; Добавьте лимонный сок. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-21.webp"
+    },
+    {
+      "slug": "recipe-22",
+      "title": "Свекольный салат",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Свекольный салат. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Свёкла, Морковь, Масло. Preparation: Вымойте и очистите свежие овощи; Мелко натрите; Заправьте маслом; при дискомфорте используйте варёную свёклу. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-22.webp"
+    },
+    {
+      "slug": "recipe-23",
+      "title": "Салат с редисом",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Салат с редисом. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Редис, Огурец, Зелень. Preparation: Тщательно вымойте овощи и зелень; Нарежьте редис тонкими ломтиками; Смешайте и подайте сразу. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-23.webp"
+    },
+    {
+      "slug": "recipe-24",
+      "title": "Банан с орехами",
+      "prompt": "Use case: photorealistic-natural. Asset: single recipe food photograph for Russian wellness app. Consistent series style: realistic editorial home cooking, one ivory matte ceramic bowl or plate centered on warm pale beige stone table, softly folded natural linen barely visible at upper right, soft daylight from upper left, warm neutral color grading, natural food texture, appetizing modest portion, near overhead 60 degree view, clean minimal scene, square composition, entire dish within central 75 percent for landscape crop. No text, labels, logos, hands, collage, cutlery or extra dishes. Finished dish only. No unlisted garnish or ingredients. Subject: Банан с орехами. Description: Простой вариант для разнообразного повседневного рациона.. Exact ingredients: Банан, Грецкий орех. Preparation: Вымойте кожуру банана перед очисткой; Нарежьте банан; Добавьте измельчённые орехи, если нет аллергии. Depict precisely this finished recipe.",
+      "file": "public/images/recipes/recipe-24.webp"
+    }
+  ]
+}

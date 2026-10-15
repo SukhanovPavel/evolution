@@ -226,17 +226,25 @@ function CheckinForm({ date }: { date: string }) {
           {(["energy", "difficulty"] as const).map((key) => (
             <label key={key}>
               {ru[key]}
-              <Select {...register(key, { valueAsNumber: true })}>
+              <Select
+                aria-label={ru[key]}
+                aria-describedby={`${key}-help`}
+                {...register(key, { valueAsNumber: true })}
+              >
                 {[1, 2, 3, 4, 5].map((v) => (
                   <option key={v}>{v}</option>
                 ))}
               </Select>
+              <span id={`${key}-help`} className={styles.muted}>
+                {ru.checkinHints[key]}
+              </span>
             </label>
           ))}
         </div>
         <label>
           {ru.mood}
           <Select
+            aria-describedby="mood-help"
             {...register("mood", {
               setValueAs: (v) => (v === "" ? null : Number(v)),
             })}
@@ -247,6 +255,9 @@ function CheckinForm({ date }: { date: string }) {
             ))}
           </Select>
         </label>
+        <p id="mood-help" className={styles.muted}>
+          {ru.checkinHints.mood}
+        </p>
         <label className={styles.checkbox}>
           <Input type="checkbox" {...register("pain_flag")} />
           {ru.pain}
@@ -266,6 +277,7 @@ function CheckinForm({ date }: { date: string }) {
   );
 }
 export function ProgramView() {
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const query = useQuery({ queryKey: ["program"], queryFn: data.program });
   const me = useQuery({
     queryKey: ["me"],
@@ -302,6 +314,7 @@ export function ProgramView() {
             <h2>{p.program_templates.title}</h2>
             {p.status === "completed" && <p>{ru.programCompleted}</p>}
             <p className={styles.muted}>{p.start_date}</p>
+            <p className={styles.muted}>{ru.programPreview}</p>
             <Button onClick={start}>{ru.restart}</Button>
             <p role="status">{message}</p>
           </Card>
@@ -317,20 +330,40 @@ export function ProgramView() {
                   date.setUTCDate(date.getUTCDate() + day - 1);
                   const current = date.toISOString().slice(0, 10) === today;
                   return (
-                    <details key={day} className={styles.day}>
-                      <summary>
-                        {ru.day} {day}
-                        {current ? " •" : ""}
-                      </summary>
-                      {p.tasks
-                        .filter((t) => t.day_number === day)
-                        .map((t) => (
-                          <p key={t.id}>{t.payload.title}</p>
-                        ))}
-                    </details>
+                    <button
+                      key={day}
+                      className={styles.day}
+                      aria-expanded={selectedDay === day}
+                      aria-controls={`program-week-${week}`}
+                      onClick={() =>
+                        setSelectedDay(selectedDay === day ? null : day)
+                      }
+                    >
+                      {ru.day} {day}
+                      {current ? " •" : ""}
+                    </button>
                   );
                 })}
               </div>
+              {selectedDay !== null &&
+                Math.floor((selectedDay - 1) / 7) === week && (
+                  <div
+                    id={`program-week-${week}`}
+                    className={styles.programDay}
+                  >
+                    <h3>
+                      {ru.day} {selectedDay}
+                    </h3>
+                    {p.tasks
+                      .filter((t) => t.day_number === selectedDay)
+                      .map((t) => (
+                        <div key={t.id}>
+                          <strong>{t.payload.title}</strong>
+                          <p>{t.payload.description}</p>
+                        </div>
+                      ))}
+                  </div>
+                )}
             </Card>
           ))}
         </>

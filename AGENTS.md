@@ -1,6 +1,7 @@
 # Evolution — Codex development instructions
 
 Read `SPEC.md` before implementing anything. Treat it as the product and acceptance specification.
+Read `PROJECT_STATE.md` at the start of a new session for the implemented state, deployment, verified checks, and outstanding work. It is a handoff, not a reason to repeat completed implementation. Update it after meaningful changes; never put credentials in it.
 
 ## Objective
 Build a functional, production-minded MVP of Evolution: a Russian-first PWA for gradually building healthy eating, home fitness, stretching and optional cold-exposure habits. Do not build a mockup-only prototype. Prioritize usable end-to-end flows.

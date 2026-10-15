@@ -239,3 +239,9 @@ tests/                 Vitest, SQL and Playwright
 Typed transport `createApiTransport({baseUrl,getAccessToken})` уже принимает HTTPS base URL и bearer token provider. Для Capacitor создайте отдельный статический/mobile frontend (например Vite), переиспользуя domain/contracts и typed API client с configurable HTTPS base URL. Next SSR и Route Handlers остаются на Vercel, **не выполняются в WebView**. Supabase native sessions получают access token; API проверяет его сервером и использует scoped bearer Supabase client, не service role. Перед включением WebView настройте CORS allowlist разрешённых app origins, безопасное OS-хранилище refresh token и redirect/deep links. Экранная логика отделена от DB; Server Actions не используются для core flows.
 
 Отложено по ТЗ: native push, Health Connect/Apple Health, камера/AI-анализ еды, внешние AI APIs, публикация в app stores. Web Push добавлен после MVP по запросу владельца; native push остаётся будущей интеграцией. Нет постоянных процессов/локальных файлов для пользовательских данных на Vercel.
+
+### Изображения рецептов
+
+24 изображения готовых блюд сгенерированы встроенным image_gen по составу и способу приготовления каждого рецепта в едином стиле. WebP 768×512 находятся в `public/images/recipes/`, итоговые промпты — в `docs/recipe-image-generation.json`. Файлы поставляются с приложением и не требуют Storage или миграции БД.
+
+`src/domain/recipe-images.ts` сопоставляет изображения с исходными рецептами по ID, названию, ингредиентам и инструкции. При изменении рецепта стандартное изображение скрывается; явно заданный администратором HTTPS `image_url` имеет приоритет. API каталога возвращает абсолютный URL, интерфейс использует тот же источник. Миниатюры загружаются лениво, место под изображение зарезервировано; ошибка загрузки скрывает фотографию без блокировки рецепта. Это иллюстрации блюд, внешний вид домашнего результата может отличаться.

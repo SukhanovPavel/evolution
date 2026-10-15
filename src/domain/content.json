@@ -689,6 +689,75 @@
       "equipment": ["none"],
       "media_url": null,
       "active": true
+    },
+    {
+      "id": "2daa1276-3da5-56e8-9874-45ea352eab65",
+      "slug": "squat",
+      "title": "Приседания",
+      "category": "activity",
+      "difficulty": "beginner",
+      "description": "6–10 спокойных приседаний за подход; глубина комфортная.",
+      "instructions": [
+        "Стопы примерно на ширине плеч, вес на всей стопе.",
+        "Отведите таз назад и согните колени по направлению носков.",
+        "Опуститесь до комфортной глубины, затем выпрямитесь на выдохе."
+      ],
+      "common_mistakes": "Рывки, задержка дыхания, потеря устойчивого положения корпуса.",
+      "warnings": "При боли, головокружении или недомогании остановитесь. При ограничениях обсудите движение со специалистом.",
+      "reps": 8,
+      "seconds": 30,
+      "rest_seconds": 30,
+      "easier": "Неглубокие приседания с опорой рукой о стену.",
+      "harder": "10–12 повторов с медленным опусканием.",
+      "equipment": ["none"],
+      "media_url": null,
+      "active": true
+    },
+    {
+      "id": "f87d837d-5cad-51af-9c57-148f9822380b",
+      "slug": "knee-push",
+      "title": "Отжимания с колен",
+      "category": "activity",
+      "difficulty": "intermediate",
+      "description": "6–10 контролируемых отжиманий; закончите подход раньше, если теряется техника.",
+      "instructions": [
+        "Встаньте в упор на ладонях и коленях; подложите мягкую нескользящую поверхность.",
+        "Сохраните прямую линию от коленей до головы, напрягите живот.",
+        "Согните локти под углом около 45° к корпусу, опустите грудь и оттолкнитесь на выдохе."
+      ],
+      "common_mistakes": "Рывки, задержка дыхания, потеря устойчивого положения корпуса.",
+      "warnings": "При боли, головокружении или недомогании остановитесь. При ограничениях обсудите движение со специалистом.",
+      "reps": 8,
+      "seconds": 30,
+      "rest_seconds": 30,
+      "easier": "Отжимания от стены.",
+      "harder": "Отжимания с опорой на стопы по 5–8 повторов.",
+      "equipment": ["none"],
+      "media_url": null,
+      "active": true
+    },
+    {
+      "id": "310ff74d-e47b-5058-a176-286183896be4",
+      "slug": "reverse-lunge",
+      "title": "Выпады назад",
+      "category": "activity",
+      "difficulty": "intermediate",
+      "description": "По 5–8 выпадов на каждую сторону; без спешки.",
+      "instructions": [
+        "Встаньте ровно, при необходимости держитесь за стену.",
+        "Шагните назад и согните оба колена до комфортной глубины.",
+        "Вернитесь через переднюю стопу и смените сторону."
+      ],
+      "common_mistakes": "Рывки, задержка дыхания, потеря устойчивого положения корпуса.",
+      "warnings": "При боли, головокружении или недомогании остановитесь. При ограничениях обсудите движение со специалистом.",
+      "reps": 8,
+      "seconds": 30,
+      "rest_seconds": 30,
+      "easier": "Неглубокий выпад с опорой или обычные приседания.",
+      "harder": "Чуть более медленное опускание, без дополнительного веса.",
+      "equipment": ["none"],
+      "media_url": null,
+      "active": true
     }
   ],
   "recipes": [
@@ -1630,6 +1699,33 @@
       "difficulty": "beginner",
       "estimated_minutes": 3,
       "active": true
+    },
+    {
+      "id": "3521096c-a857-5e1c-9816-164e0e8b6d76",
+      "slug": "strength-mini",
+      "title": "Силовой минимум: приседания и отжимания",
+      "category": "activity",
+      "difficulty": "beginner",
+      "estimated_minutes": 3,
+      "active": true
+    },
+    {
+      "id": "7b83cd7f-aaaa-5234-bedb-f071d4045051",
+      "slug": "strength-start",
+      "title": "Базовая силовая: приседания и отжимания",
+      "category": "activity",
+      "difficulty": "beginner",
+      "estimated_minutes": 6,
+      "active": true
+    },
+    {
+      "id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "slug": "strength-intermediate",
+      "title": "Силовая: ноги, отжимания и корпус",
+      "category": "activity",
+      "difficulty": "intermediate",
+      "estimated_minutes": 12,
+      "active": true
     }
   ],
   "routine_exercises": [
@@ -1856,6 +1952,174 @@
       "reps": 4,
       "seconds": 30,
       "rest_seconds": 20
+    },
+    {
+      "routine_id": "3521096c-a857-5e1c-9816-164e0e8b6d76",
+      "exercise_id": "cede21ad-6937-5381-8ffc-78e43f4e86cc",
+      "sort_order": 0,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "3521096c-a857-5e1c-9816-164e0e8b6d76",
+      "exercise_id": "2daa1276-3da5-56e8-9874-45ea352eab65",
+      "sort_order": 1,
+      "reps": 8,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "3521096c-a857-5e1c-9816-164e0e8b6d76",
+      "exercise_id": "6c09849b-427e-5837-a4bb-7abfb27ed2ab",
+      "sort_order": 2,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "7b83cd7f-aaaa-5234-bedb-f071d4045051",
+      "exercise_id": "cede21ad-6937-5381-8ffc-78e43f4e86cc",
+      "sort_order": 0,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "7b83cd7f-aaaa-5234-bedb-f071d4045051",
+      "exercise_id": "2daa1276-3da5-56e8-9874-45ea352eab65",
+      "sort_order": 1,
+      "reps": 8,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "7b83cd7f-aaaa-5234-bedb-f071d4045051",
+      "exercise_id": "6c09849b-427e-5837-a4bb-7abfb27ed2ab",
+      "sort_order": 2,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "7b83cd7f-aaaa-5234-bedb-f071d4045051",
+      "exercise_id": "db260720-1d76-50d7-9e18-8607d29db404",
+      "sort_order": 3,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "7b83cd7f-aaaa-5234-bedb-f071d4045051",
+      "exercise_id": "7589808e-0d7f-5cb0-bfee-833c723ad976",
+      "sort_order": 4,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "7b83cd7f-aaaa-5234-bedb-f071d4045051",
+      "exercise_id": "39c03810-ed7c-5ebb-98be-bf85cba7ad23",
+      "sort_order": 5,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "cede21ad-6937-5381-8ffc-78e43f4e86cc",
+      "sort_order": 0,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "2daa1276-3da5-56e8-9874-45ea352eab65",
+      "sort_order": 1,
+      "reps": 8,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "f87d837d-5cad-51af-9c57-148f9822380b",
+      "sort_order": 2,
+      "reps": 8,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "310ff74d-e47b-5058-a176-286183896be4",
+      "sort_order": 3,
+      "reps": 8,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "11acc66c-dafe-5671-8e84-4f2e30dd5374",
+      "sort_order": 4,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "cf882071-612b-572b-8616-c268df7d2edd",
+      "sort_order": 5,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "cede21ad-6937-5381-8ffc-78e43f4e86cc",
+      "sort_order": 6,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "2daa1276-3da5-56e8-9874-45ea352eab65",
+      "sort_order": 7,
+      "reps": 8,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "f87d837d-5cad-51af-9c57-148f9822380b",
+      "sort_order": 8,
+      "reps": 8,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "310ff74d-e47b-5058-a176-286183896be4",
+      "sort_order": 9,
+      "reps": 8,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "11acc66c-dafe-5671-8e84-4f2e30dd5374",
+      "sort_order": 10,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
+    },
+    {
+      "routine_id": "a56f7117-ca73-5719-a858-8945d72af90b",
+      "exercise_id": "cf882071-612b-572b-8616-c268df7d2edd",
+      "sort_order": 11,
+      "reps": 6,
+      "seconds": 30,
+      "rest_seconds": 30
     }
   ],
   "program_templates": [

@@ -6,7 +6,13 @@ import {
   TemplateTask,
   Routine,
 } from "@/domain/content";
-import { generatePlan, Plan, Task, Program } from "@/domain/plan";
+import {
+  generatePlan,
+  previewProgram,
+  Plan,
+  Task,
+  Program,
+} from "@/domain/plan";
 import { localDate, dayNumber } from "@/domain/dates";
 import { progressSummary, HabitEvent } from "@/domain/progress";
 export let demoProfile: Profile = {
@@ -33,9 +39,15 @@ export function demoProgram(): Program {
     status: "active",
     template_id: template.id,
     program_templates: template,
-    tasks: content.program_template_tasks.filter(
-      (t) => t.program_template_id === template.id,
-    ) as TemplateTask[],
+    tasks: previewProgram({
+      preferences: demoPreferences,
+      templates: content.program_template_tasks.filter(
+        (t) => t.program_template_id === template.id,
+      ) as TemplateTask[],
+      catalog: content as unknown as Parameters<
+        typeof generatePlan
+      >[0]["catalog"],
+    }),
   };
 }
 export function demoPlan(date = localDate(demoProfile.timezone)): Plan {

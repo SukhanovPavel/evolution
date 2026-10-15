@@ -14,6 +14,7 @@ vi.mock("@/lib/supabase/server", () => ({
   }),
 }));
 vi.mock("server-only", () => ({}));
+import { content } from "@/domain/content";
 import { GET, PATCH } from "@/app/api/v1/[...path]/route";
 beforeEach(() => {
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co");
@@ -97,4 +98,25 @@ describe("API authorization", () => {
     expect(r.status).toBe(403);
     expect((await r.json()).error.code).toBe("ADMIN_REQUIRED");
   });
+});
+
+it("includes bundled image URLs in the authenticated recipe API", async () => {
+  mocks.user = { id: "verified-user" };
+  const result = { data: content.recipes[0], error: null };
+  const chain = {
+    select: vi.fn(),
+    eq: vi.fn(),
+    maybeSingle: async () => result,
+  };
+  chain.select.mockReturnValue(chain);
+  chain.eq.mockReturnValue(chain);
+  mocks.from.mockReturnValue(chain);
+  const response = await GET(
+    new NextRequest("https://evolution.example/api/v1/recipes/recipe-1"),
+    ctx("recipes/recipe-1"),
+  );
+  expect(response.status).toBe(200);
+  expect((await response.json()).data.image_url).toBe(
+    "https://evolution.example/images/recipes/recipe-1.webp",
+  );
 });

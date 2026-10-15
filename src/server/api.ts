@@ -1,3 +1,5 @@
+import { recipeWithImage } from "@/domain/recipe-images";
+import type { Recipe } from "@/domain/content";
 import { NextRequest } from "next/server";
 import { serverClient } from "@/lib/supabase/server";
 import { ok, fail, HttpError, checked } from "@/lib/http";
@@ -340,7 +342,11 @@ export async function handle(
       if (parts.length === 2) {
         const value = checked(await q.eq("slug", parts[1]).maybeSingle());
         if (!value) throw new HttpError(404, "NOT_FOUND");
-        return ok(value);
+        return ok(
+          parts[0] === "recipes"
+            ? recipeWithImage(value as unknown as Recipe, req.nextUrl.origin)
+            : value,
+        );
       }
       const search = query.get("search");
       if (search)
@@ -359,8 +365,15 @@ export async function handle(
         q = q.contains("track_tags", [
           z.enum(["healthy", "vegetarian", "raw"]).parse(query.get("track")),
         ]);
+      const values = checked(
+        await q.order("title").range(offset, offset + limit - 1),
+      );
       return ok(
-        checked(await q.order("title").range(offset, offset + limit - 1)),
+        parts[0] === "recipes"
+          ? (values ?? []).map((r) =>
+              recipeWithImage(r as unknown as Recipe, req.nextUrl.origin),
+            )
+          : values,
       );
     }
     if (path === "favorites" && method === "GET")

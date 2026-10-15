@@ -166,7 +166,7 @@
 }
 .calendar {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 8px;
 }
 .day {
@@ -361,4 +361,24 @@
 }
 .stack {
   min-width: 0;
+}
+
+.programDay {
+  margin-top: var(--space-4, 16px);
+  padding: var(--space-4, 16px);
+  border-radius: var(--radius);
+  background: var(--accent);
+  overflow-wrap: anywhere;
+  display: grid;
+  gap: 16px;
+}
+.day[aria-expanded="true"] {
+  background: var(--primary);
+  color: white;
+}
+button.day {
+  border: 0;
+  cursor: pointer;
+  min-height: 48px;
+  overflow-wrap: anywhere;
 }

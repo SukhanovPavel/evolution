@@ -5,10 +5,12 @@ import { data } from "@/lib/data";
 import { ru } from "@/i18n/ru";
 import { Recipe, Exercise } from "@/domain/content";
 import { QueryState } from "./QueryState";
+import { RecipeImage } from "./RecipeImage";
 import styles from "./App.module.css";
 export function RecipeDetail({ recipe }: { recipe: Recipe }) {
   return (
     <div className={styles.stack}>
+      <RecipeImage recipe={recipe} />
       <p>{recipe.description}</p>
       <p className={styles.tag}>
         {recipe.prep_minutes} {ru.minutes} · {recipe.servings} {ru.servings}
