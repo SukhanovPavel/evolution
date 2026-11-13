@@ -57,6 +57,27 @@ do $$ declare jobs jsonb; begin
 end $$;
 reset role;
 delete from evolution_private.push_deliveries where subscription_id in(select id from push_subscriptions where user_id='11111111-1111-4111-8111-111111111111');
+-- Exercise exclusions and recent fatigue must also suppress exercise copy.
+update daily_checkins set pain_flag=false,energy=2 where user_id='11111111-1111-4111-8111-111111111111';
+do $$ declare jobs jsonb;begin
+ jobs:=claim_push_deliveries(repeat('test',16));
+ if jsonb_array_length(jobs)<>1 or jobs->0->>'kind'<>'rest' then raise exception 'PUSH FATIGUE';end if;
+end $$;
+delete from evolution_private.push_deliveries where subscription_id in(select id from push_subscriptions where user_id='11111111-1111-4111-8111-111111111111');
+update daily_checkins set energy=3 where user_id='11111111-1111-4111-8111-111111111111';
+insert into user_preferences(user_id,nutrition_track,time_budget_minutes,activity_level,safety_ack,excluded_exercises) values('11111111-1111-4111-8111-111111111111','healthy',15,'beginner',true,'["squat"]'::jsonb)
+on conflict(user_id) do update set excluded_exercises=excluded.excluded_exercises;
+do $$ declare jobs jsonb;begin
+ jobs:=claim_push_deliveries(repeat('test',16));
+ if jsonb_array_length(jobs)<>1 or jobs->0->>'kind'<>'rest' then raise exception 'PUSH EXCLUSIONS';end if;
+end $$;
+delete from evolution_private.push_deliveries where subscription_id in(select id from push_subscriptions where user_id='11111111-1111-4111-8111-111111111111');
+update user_preferences set excluded_exercises='[]'::jsonb where user_id='11111111-1111-4111-8111-111111111111';
+do $$ declare jobs jsonb;begin
+ jobs:=claim_push_deliveries(repeat('test',16));
+ if jsonb_array_length(jobs)<>1 or jobs->0->>'kind'<>'movement' then raise exception 'PUSH NORMAL MOVEMENT';end if;
+end $$;
+delete from evolution_private.push_deliveries where subscription_id in(select id from push_subscriptions where user_id='11111111-1111-4111-8111-111111111111');
 update push_settings s set work_end=(select (date_trunc('minute',now() at time zone p.timezone)-interval '15 minutes')::time from profiles p where p.id=s.user_id) where s.user_id='11111111-1111-4111-8111-111111111111';
 set local role anon;
 do $$ begin if jsonb_array_length(claim_push_deliveries(repeat('test',16)))<>0 then raise exception 'PUSH OUTSIDE WORK HOURS';end if;end $$;
