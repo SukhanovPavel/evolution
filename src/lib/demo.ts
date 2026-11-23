@@ -13,7 +13,7 @@ import {
   Task,
   Program,
 } from "@/domain/plan";
-import { localDate, dayNumber } from "@/domain/dates";
+import { localDate, dayNumber, programExpired } from "@/domain/dates";
 import { progressSummary, HabitEvent } from "@/domain/progress";
 export let demoProfile: Profile = {
   display_name: "",
@@ -29,17 +29,28 @@ const plans = new Map<string, Plan>();
 const checkins = new Map<string, Checkin>();
 const events: HabitEvent[] = [];
 export const demoFavorites = new Set<string>();
+let cycle = 1;
+let startDate: string | undefined;
+export function demoContinue() {
+  cycle++;
+  startDate = localDate(demoProfile.timezone);
+  return demoProgram();
+}
 export function demoProgram(): Program {
   const template = content.program_templates.find(
     (t) => t.category === demoPreferences.nutrition_track,
   )!;
   return {
     id: "demo-program",
-    start_date: localDate(demoProfile.timezone),
-    status: "active",
+    start_date: (startDate ??= localDate(demoProfile.timezone)),
+    cycle,
+    status: programExpired(startDate, localDate(demoProfile.timezone))
+      ? "completed"
+      : "active",
     template_id: template.id,
     program_templates: template,
     tasks: previewProgram({
+      cycle,
       preferences: demoPreferences,
       templates: content.program_template_tasks.filter(
         (t) => t.program_template_id === template.id,
@@ -58,7 +69,8 @@ export function demoPlan(date = localDate(demoProfile.timezone)): Plan {
     checkins: [...checkins.values()]
       .filter((c) => c.local_date! < date)
       .reverse(),
-    templates: program.tasks,
+    templates: [],
+    cycle,
     day: dayNumber(program.start_date, date),
     catalog: content as unknown as Parameters<
       typeof generatePlan

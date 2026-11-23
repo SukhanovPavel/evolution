@@ -16,6 +16,7 @@ import {
   exerciseSchema,
   templateBundleSchema,
 } from "@/domain/content";
+import { measurementSchema } from "@/domain/measurements";
 import { progressSummary } from "@/domain/progress";
 import type { Plan } from "@/domain/plan";
 import { localDate, addDays } from "@/domain/dates";
@@ -224,6 +225,16 @@ export async function handle(
     }
 
     if (path === "program" && method === "GET") return ok(await repo.program());
+    if (path === "program/continue" && method === "POST") {
+      const { previous_id } = z
+        .object({ previous_id: z.uuid() })
+        .parse(await req.json());
+      const next = checked(
+        await client.rpc("continue_program", { p_previous: previous_id }),
+      );
+      if (!next) throw new HttpError(409, "CYCLE_NOT_READY");
+      return ok(await repo.program());
+    }
     if (path === "program/start" && method === "POST") {
       const value = z
         .object({ template_id: z.uuid().optional() })
@@ -440,6 +451,48 @@ export async function handle(
         }
       return ok([...items.values()]);
     }
+    if (path === "measurements" && method === "GET") {
+      const before = query.has("before")
+        ? dateSchema.parse(query.get("before"))
+        : null;
+      let rows = client
+        .from("body_measurements")
+        .select("local_date,weight_kg,chest_cm,waist_cm,hips_cm")
+        .eq("user_id", id)
+        .order("local_date", { ascending: false })
+        .limit(31);
+      if (before) rows = rows.lt("local_date", before);
+      return ok(checked(await rows));
+    }
+    if (
+      parts[0] === "measurements" &&
+      parts.length === 2 &&
+      ["PUT", "DELETE"].includes(method)
+    ) {
+      const date = dateSchema.parse(parts[1]);
+      if (method === "DELETE") {
+        checked(
+          await client
+            .from("body_measurements")
+            .delete()
+            .eq("user_id", id)
+            .eq("local_date", date),
+        );
+        return ok({ deleted: true });
+      }
+      if (date > localDate((await repo.profile()).timezone))
+        throw new HttpError(422, "FUTURE_DATE");
+      const value = measurementSchema.parse(await req.json());
+      checked(
+        await client
+          .from("body_measurements")
+          .upsert(
+            { ...value, user_id: id, local_date: date },
+            { onConflict: "user_id,local_date" },
+          ),
+      );
+      return ok({ ...value, local_date: date });
+    }
     if (path === "progress" && method === "GET") {
       const { from, to } = range();
       const results = await Promise.all([
@@ -521,6 +574,7 @@ export async function handle(
         "daily_plans",
         "daily_tasks",
         "daily_checkins",
+        "body_measurements",
         "user_recipe_favorites",
         "habit_events",
       ];

@@ -2,6 +2,13 @@ import { ru } from "@/i18n/ru";
 
 // Use the scheduled local slot, never delivery time: retries/devices get the same copy.
 export function pushPayload(kind: string, eventKey: string) {
+  if (kind === "daily_plan" || kind === "screen_break")
+    return {
+      title: kind === "daily_plan" ? ru.month.pushTitle : ru.month.screenTitle,
+      body: kind === "daily_plan" ? ru.month.pushBody : ru.month.screenBody,
+      url: "/today",
+      tag: `evolution-${eventKey}`,
+    };
   const slot = /^(\d{4}-\d{2}-\d{2}):(\d{2}):(\d{2}):/.exec(eventKey);
   const day = slot
     ? Math.floor(Date.parse(slot[1] + "T00:00:00Z") / 86400000)

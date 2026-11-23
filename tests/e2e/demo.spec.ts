@@ -94,7 +94,10 @@ test("program day expands across the week and closes the previous day", async ({
   await first.click();
   await expect(first).toHaveAttribute("aria-expanded", "true");
   const panel = page.locator("#program-week-0");
-  await expect(panel).toContainText("приседания и отжимания");
+  await expect(panel).toContainText("Домашняя силовая тренировка");
+  await expect(panel).toContainText("Завтрак");
+  await expect(panel).toContainText("Обед");
+  await expect(panel).toContainText("Ужин");
   const width = await panel.evaluate((el) => el.getBoundingClientRect().width);
   const cardWidth = await panel.evaluate(
     (el) => el.parentElement!.getBoundingClientRect().width,
@@ -162,4 +165,25 @@ test("recipe photography loads in the catalog and recipe details", async ({
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+});
+
+test("records, edits and removes optional body measurements", async ({
+  page,
+}) => {
+  await page.goto("/progress");
+  const card = page
+    .locator("section")
+    .filter({ has: page.getByRole("heading", { name: "Замеры тела" }) });
+  await card.getByLabel("Вес, кг").fill("72,5");
+  await card.getByLabel("Талия, см").fill("81");
+  await card.getByRole("button", { name: "Сохранить" }).click();
+  const entry = card.locator("details");
+  await entry.locator("summary").click();
+  await expect(entry).toContainText("72,5");
+  await entry.getByRole("button", { name: "Изменить замер" }).click();
+  await card.getByLabel("Талия, см").fill("80");
+  await card.getByRole("button", { name: "Сохранить" }).click();
+  await expect(entry).toContainText("Талия, см · 80");
+  await entry.getByRole("button", { name: "Удалить замер" }).click();
+  await expect(entry).toHaveCount(0);
 });

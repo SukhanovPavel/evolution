@@ -38,7 +38,11 @@ export async function POST(req: NextRequest) {
         deliveries.slice(i, i + 10).map(async (delivery) => {
           let result = "sent";
           try {
-            await sendPush(delivery, delivery.kind, delivery.event_key);
+            await sendPush(
+              delivery,
+              delivery.kind === "food" ? "daily_plan" : "screen_break",
+              delivery.event_key,
+            );
             sent++;
           } catch (error) {
             const status = (error as { statusCode?: number }).statusCode;

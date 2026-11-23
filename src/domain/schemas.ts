@@ -31,10 +31,11 @@ export const preferencesSchema = z
           "energy",
           "routine",
           "walking",
+          "fat_loss",
+          "muscle",
         ]),
       )
-      .min(1)
-      .max(6),
+      .max(8),
     time_budget_minutes: z.union([
       z.literal(5),
       z.literal(10),
@@ -43,7 +44,7 @@ export const preferencesSchema = z
       z.literal(30),
       z.literal(45),
     ]),
-    activity_level: z.enum(["beginner", "intermediate"]),
+    activity_level: z.enum(["beginner", "intermediate", "advanced"]),
     equipment: z.array(z.enum(["none", "mat", "chair", "bands"])).max(4),
     excluded_exercises: z.array(z.string().max(100)).max(30),
     food_allergies: z.array(z.string().max(80)).max(30),

@@ -7,6 +7,7 @@ import {
   demoCheckins,
   demoProgress,
   demoProgram,
+  demoContinue,
   demoRoutine,
   demoSession,
   demoRecipes,
@@ -14,8 +15,44 @@ import {
 import { content, Exercise, Routine, Recipe } from "@/domain/content";
 import type { Plan, Task, Program } from "@/domain/plan";
 import type { Checkin } from "@/domain/schemas";
+import type { Measurement, MeasurementValues } from "@/domain/measurements";
 import type { Progress } from "@/domain/progress";
+const demoMeasurements = new Map<string, Measurement>();
 export const data = {
+  measurements: (before?: string) =>
+    configured
+      ? request<Measurement[]>(
+          `measurements${before ? `?before=${before}` : ""}`,
+        )
+      : Promise.resolve(
+          [...demoMeasurements.values()]
+            .filter((row) => !before || row.local_date < before)
+            .sort((a, b) => b.local_date.localeCompare(a.local_date))
+            .slice(0, 31),
+        ),
+  saveMeasurement: async (date: string, value: MeasurementValues) => {
+    if (configured)
+      return request<Measurement>(`measurements/${date}`, {
+        method: "PUT",
+        body: JSON.stringify(value),
+      });
+    const row = { local_date: date, ...value };
+    demoMeasurements.set(date, row);
+    return row;
+  },
+  removeMeasurement: async (date: string) => {
+    if (configured)
+      return request(`measurements/${date}`, { method: "DELETE" });
+    demoMeasurements.delete(date);
+  },
+  continueProgram: (previous_id: string) =>
+    configured
+      ? request<Program>("program/continue", {
+          method: "POST",
+          body: JSON.stringify({ previous_id }),
+        })
+      : Promise.resolve(demoContinue()),
+
   checkins: (from: string, to: string) =>
     configured
       ? request<Checkin[]>(`checkins?from=${from}&to=${to}`)

@@ -74,6 +74,13 @@ function Editor({
     },
   });
   const values = useWatch({ control });
+  const goals = (values.preferences?.goals ??
+    defaults.goals) as Preferences["goals"];
+  const supportGoals = goals.filter(
+    (goal) => goal !== "fat_loss" && goal !== "muscle",
+  );
+  const focus =
+    goals.find((goal) => goal === "fat_loss" || goal === "muscle") ?? "fitness";
   async function submit(v: { profile: Profile; preferences: Preferences }) {
     try {
       if (!configured) {
@@ -146,18 +153,48 @@ function Editor({
                   ))}
                 </Select>
               </label>
+              <label>
+                {ru.month.focus}
+                <Select
+                  value={focus}
+                  onChange={(event) => {
+                    const choice = event.target.value;
+                    setValue(
+                      "preferences.goals",
+                      choice === "fat_loss" || choice === "muscle"
+                        ? [...supportGoals, choice]
+                        : supportGoals,
+                      { shouldDirty: true },
+                    );
+                  }}
+                >
+                  <option value="fitness">{ru.month.fitness}</option>
+                  <option value="fat_loss">{ru.goalNames.fat_loss}</option>
+                  <option value="muscle">{ru.goalNames.muscle}</option>
+                </Select>
+              </label>
               <fieldset>
                 <legend>{ru.goals}</legend>
-                {Object.entries(ru.goalNames).map(([key, label]) => (
-                  <label className={styles.checkbox} key={key}>
-                    <Input
-                      type="checkbox"
-                      value={key}
-                      {...register("preferences.goals")}
-                    />
-                    {label}
-                  </label>
-                ))}
+                {(Object.keys(ru.goalNames) as Preferences["goals"])
+                  .filter((key) => key !== "fat_loss" && key !== "muscle")
+                  .map((key) => (
+                    <label className={styles.checkbox} key={key}>
+                      <Input
+                        type="checkbox"
+                        checked={goals.includes(key)}
+                        onChange={(event) => {
+                          setValue(
+                            "preferences.goals",
+                            event.target.checked
+                              ? [...goals, key]
+                              : goals.filter((goal) => goal !== key),
+                            { shouldDirty: true },
+                          );
+                        }}
+                      />
+                      {ru.goalNames[key]}
+                    </label>
+                  ))}
               </fieldset>
             </>
           )}
@@ -179,6 +216,7 @@ function Editor({
                 <Select {...register("preferences.activity_level")}>
                   <option value="beginner">{ru.beginner}</option>
                   <option value="intermediate">{ru.intermediate}</option>
+                  <option value="advanced">{ru.advanced}</option>
                 </Select>
               </label>
               <fieldset>

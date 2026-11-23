@@ -32,7 +32,7 @@ describe("reminder settings", () => {
         <Notifications />
       </QueryClientProvider>,
     );
-    const food = await screen.findByLabelText("Время напоминания о питании");
+    const food = await screen.findByLabelText("Время ежедневного напоминания");
     expect(food).toHaveValue("13:45");
     fireEvent.click(screen.getByLabelText("Присылать напоминания"));
     fireEvent.change(screen.getByLabelText("Начало рабочего дня"), {

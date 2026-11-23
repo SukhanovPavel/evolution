@@ -25,7 +25,7 @@ export const defaultNotificationSettings: NotificationSettings = {
   enabled: false,
   food_enabled: true,
   food_time: "12:30",
-  movement_enabled: true,
+  movement_enabled: false,
   work_start: "09:00",
   work_end: "18:00",
   movement_interval: 60,

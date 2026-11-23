@@ -1,3 +1,4 @@
+import { monthMenu, monthSession } from "./month-plan";
 import { ru } from "@/i18n/ru";
 import type { Preferences, Checkin } from "./schemas";
 import type { Recipe, Exercise, Routine, TemplateTask } from "./content";
@@ -26,6 +27,7 @@ export type Plan = {
 export type Program = {
   id: string;
   start_date: string;
+  cycle?: number;
   status: string;
   template_id: string;
   program_templates: { title: string; slug: string; duration_days: number };
@@ -57,7 +59,7 @@ export function safeExercises(
     (e): e is Exercise =>
       Boolean(e) &&
       e!.active &&
-      (preferences.activity_level === "intermediate" ||
+      (preferences.activity_level !== "beginner" ||
         e!.difficulty === "beginner") &&
       !preferences.excluded_exercises.some(
         (v) =>
@@ -78,6 +80,7 @@ export function generatePlan(input: {
   day: number;
   catalog: Catalog;
   recentCompletion: number;
+  cycle?: number;
 }) {
   const { preferences: p, checkins, templates, day, catalog } = input;
   const last = checkins[0];
@@ -108,25 +111,9 @@ export function generatePlan(input: {
             : last
               ? "maintain"
               : "initial";
-  const recovery = warning || day % 7 === 0 || Boolean(p.limitations.trim());
   const budget = low
     ? Math.max(3, Math.floor(p.time_budget_minutes * 0.6))
     : p.time_budget_minutes;
-  const exercises = safeExercises(catalog.exercises, p);
-  const allowed = new Set(exercises.map((e) => e.id));
-  const routines = catalog.routines.filter(
-    (r) =>
-      r.active &&
-      (p.activity_level === "intermediate" || r.difficulty === "beginner") &&
-      catalog.routine_exercises.some((i) => i.routine_id === r.id) &&
-      catalog.routine_exercises
-        .filter((i) => i.routine_id === r.id)
-        .every((i) => allowed.has(i.exercise_id)),
-  );
-  const recipes = safeRecipes(catalog.recipes, p);
-  const source = templates
-    .filter((t) => t.day_number === day)
-    .sort((a, b) => a.sort_order - b.sort_order);
   const tasks: Omit<Task, "id">[] = [];
   let remaining = budget;
   function add(
@@ -153,6 +140,64 @@ export function generatePlan(input: {
       completed_at: null,
     });
   }
+  if (input.cycle !== undefined) {
+    const session = monthSession(
+      p,
+      catalog,
+      day,
+      input.cycle,
+      warning || limitations,
+      Boolean(low),
+      easy,
+      budget,
+    );
+    add(session.category, session.title, session.description, session.minutes);
+    for (const meal of monthMenu(p, catalog, day, input.cycle))
+      add(
+        "nutrition",
+        meal.title,
+        meal.description,
+        0,
+        meal.recipe ? "recipe" : null,
+        meal.recipe?.id ?? null,
+      );
+    if (
+      easy &&
+      !warning &&
+      !limitations &&
+      !low &&
+      p.cold_opt_in &&
+      p.cold_safety_ack
+    )
+      add("recovery", ru.plan.coldTitle, ru.plan.coldDescription, 0);
+    return {
+      adaptation_reason:
+        warning || limitations || low
+          ? reason
+          : session.category === "recovery"
+            ? "rest_day"
+            : last
+              ? "maintain"
+              : "initial",
+      tasks,
+    };
+  }
+  const recovery = warning || day % 7 === 0 || limitations;
+  const exercises = safeExercises(catalog.exercises, p);
+  const allowed = new Set(exercises.map((e) => e.id));
+  const routines = catalog.routines.filter(
+    (r) =>
+      r.active &&
+      (p.activity_level !== "beginner" || r.difficulty === "beginner") &&
+      catalog.routine_exercises.some((i) => i.routine_id === r.id) &&
+      catalog.routine_exercises
+        .filter((i) => i.routine_id === r.id)
+        .every((i) => allowed.has(i.exercise_id)),
+  );
+  const recipes = safeRecipes(catalog.recipes, p);
+  const source = templates
+    .filter((t) => t.day_number === day)
+    .sort((a, b) => a.sort_order - b.sort_order);
   const food = source.find((t) => t.task_type === "nutrition");
   const recipe =
     recipes.find((r) => r.id === food?.payload.reference_id) ??
@@ -270,6 +315,7 @@ export function previewProgram(input: {
   preferences: Preferences;
   templates: TemplateTask[];
   catalog: Catalog;
+  cycle?: number;
 }): TemplateTask[] {
   return Array.from({ length: 30 }, (_, i) => {
     const day = i + 1;

@@ -6,6 +6,7 @@ import { data } from "@/lib/data";
 import { localDate, addDays } from "@/domain/dates";
 import { ru } from "@/i18n/ru";
 import { Card } from "./ui/Card";
+import { Measurements } from "./Measurements";
 import { QueryState } from "./QueryState";
 import styles from "./App.module.css";
 export function ProgressView() {
@@ -21,6 +22,7 @@ export function ProgressView() {
   return (
     <div className={styles.stack}>
       <h1>{ru.progress}</h1>
+      <Measurements />
       <div className={styles.row}>
         <Input
           className={styles.input}

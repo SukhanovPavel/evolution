@@ -13,10 +13,10 @@ import {
   StretchHorizontal,
 } from "lucide-react";
 import { data } from "@/lib/data";
-import { api, request } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import { configured } from "@/lib/supabase/browser";
 import { demoProfile } from "@/lib/demo";
-import { localDate } from "@/domain/dates";
+import { addDays, localDate } from "@/domain/dates";
 import { checkinSchema } from "@/domain/schemas";
 import { Task } from "@/domain/plan";
 import { ru } from "@/i18n/ru";
@@ -119,6 +119,11 @@ export function Today() {
                           </button>
                           <div className={styles.taskBody}>
                             <h3>{task.title}</h3>
+                            {task.category === "nutrition" && (
+                              <p className={styles.muted}>
+                                {task.description.split("\n")[0]}
+                              </p>
+                            )}
                             <p>
                               {task.estimated_minutes
                                 ? `${task.estimated_minutes} ${ru.minutes}`
@@ -166,7 +171,7 @@ export function Today() {
       {mutation.error && <p role="alert">{ru.error}</p>}
       {selected && (
         <Modal title={selected.title} onClose={() => setSelected(null)}>
-          <p>{selected.description}</p>
+          <p className={styles.multiline}>{selected.description}</p>
           <ContentDetail
             type={selected.reference_type}
             id={selected.reference_id}
@@ -284,19 +289,24 @@ export function ProgramView() {
     queryFn: api.me,
     enabled: configured,
   });
-  const [message, setMessage] = useState("");
+  const cache = useQueryClient();
   const p = query.data;
   const today = localDate(me.data?.timezone ?? demoProfile.timezone);
-  async function start() {
-    try {
-      if (configured)
-        await request("program/start", { method: "POST", body: "{}" });
-      await query.refetch();
-      setMessage(ru.saved);
-    } catch {
-      setMessage(ru.error);
-    }
-  }
+  const date =
+    p && selectedDay ? addDays(p.start_date, selectedDay - 1) : undefined;
+  const history = useQuery({
+    queryKey: ["plan", date],
+    queryFn: () => data.plan(date),
+    enabled: Boolean(configured && date && date < today),
+  });
+  const continuation = useMutation({
+    mutationFn: data.continueProgram,
+    onSuccess: async (program) => {
+      setSelectedDay(null);
+      cache.setQueryData(["program"], program);
+      await cache.invalidateQueries({ queryKey: ["plan"] });
+    },
+  });
   return (
     <div className={styles.stack}>
       <h1>{ru.program}</h1>
@@ -315,8 +325,21 @@ export function ProgramView() {
             {p.status === "completed" && <p>{ru.programCompleted}</p>}
             <p className={styles.muted}>{p.start_date}</p>
             <p className={styles.muted}>{ru.programPreview}</p>
-            <Button onClick={start}>{ru.restart}</Button>
-            <p role="status">{message}</p>
+            <p>
+              {ru.month.cycle} {p.cycle ?? 1} · {ru.month.guide}
+            </p>
+            {p.status === "completed" && (
+              <Button
+                disabled={continuation.isPending}
+                onClick={() => continuation.mutate(p.id)}
+              >
+                {ru.month.continue}
+              </Button>
+            )}
+            {(continuation.isSuccess || date === today) && (
+              <Link href="/today">{ru.month.continueToday}</Link>
+            )}
+            {continuation.isError && <p role="alert">{ru.error}</p>}
           </Card>
           {[0, 1, 2, 3, 4].map((week) => (
             <Card key={week}>
@@ -354,14 +377,31 @@ export function ProgramView() {
                     <h3>
                       {ru.day} {selectedDay}
                     </h3>
-                    {p.tasks
-                      .filter((t) => t.day_number === selectedDay)
-                      .map((t) => (
-                        <div key={t.id}>
-                          <strong>{t.payload.title}</strong>
-                          <p>{t.payload.description}</p>
-                        </div>
-                      ))}
+                    {history.data
+                      ? history.data.daily_tasks.map((task) => (
+                          <div key={task.id}>
+                            <strong>
+                              {task.title} · {ru[task.status]}
+                            </strong>
+                            <p className={styles.multiline}>
+                              {task.description}
+                            </p>
+                          </div>
+                        ))
+                      : p.tasks
+                          .filter((t) => t.day_number === selectedDay)
+                          .map((t) => (
+                            <div key={t.id}>
+                              <strong>
+                                {t.payload.title}
+                                {t.estimated_minutes > 0 &&
+                                  ` · ${t.estimated_minutes} ${ru.minutes}`}
+                              </strong>
+                              <p className={styles.multiline}>
+                                {t.payload.description}
+                              </p>
+                            </div>
+                          ))}
                   </div>
                 )}
             </Card>

@@ -43,6 +43,8 @@ export class Repository {
         .select("*,program_templates(*)")
         .eq("user_id", this.userId)
         .order("created_at", { ascending: false })
+        .order("cycle", { ascending: false })
+        .order("id", { ascending: false })
         .limit(1)
         .maybeSingle(),
     );
@@ -80,6 +82,9 @@ export class Repository {
     return {
       ...p,
       tasks: previewProgram({
+        cycle: p.program_templates.slug.startsWith("starter-")
+          ? (p.cycle ?? 1)
+          : undefined,
         preferences,
         templates: tasks as TemplateTask[],
         catalog: {
@@ -104,7 +109,11 @@ export class Repository {
         .eq("local_date", requested)
         .maybeSingle(),
     ) as Plan | null;
-    if (plan || requested !== today) return plan;
+    if (plan) {
+      plan.daily_tasks.sort((a, b) => a.sort_order - b.sort_order);
+      return plan;
+    }
+    if (requested !== today) return null;
     const preferences = await this.preferences(),
       program = await this.program(false);
     if (!preferences || !program)
@@ -139,6 +148,9 @@ export class Repository {
     const result = generatePlan({
       preferences,
       checkins: checkins as Checkin[],
+      cycle: program.program_templates.slug.startsWith("starter-")
+        ? (program.cycle ?? 1)
+        : undefined,
       templates: program.tasks as TemplateTask[],
       day: dayNumber(program.start_date, today),
       catalog: {

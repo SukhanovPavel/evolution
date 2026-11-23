@@ -16,11 +16,7 @@ export function QueryState({
   if (error instanceof ApiError && error.code === "ONBOARDING_REQUIRED")
     return <Link href="/onboarding">{ru.onboarding} →</Link>;
   if (error instanceof ApiError && error.code === "PROGRAM_COMPLETED")
-    return (
-      <Link href="/program">
-        {ru.programCompleted} — {ru.restart} →
-      </Link>
-    );
+    return <Link href="/program">{ru.month.continue} →</Link>;
   if (error instanceof ApiError && error.code === "DATABASE_NOT_READY")
     return <p role="alert">{ru.databaseUnavailable}</p>;
   if (error)

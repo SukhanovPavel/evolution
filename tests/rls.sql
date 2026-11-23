@@ -18,9 +18,25 @@ do $$ begin if (select nutrition_track from user_preferences where user_id=auth.
 select public.save_daily_plan((now() at time zone 'UTC')::date,'UTC','initial','[{"category":"recovery","title":"Rest","description":"Rest","estimated_minutes":1,"sort_order":0}]');
 select public.save_daily_plan((now() at time zone 'UTC')::date,'UTC','initial','[{"category":"recovery","title":"Rest","description":"Rest","estimated_minutes":1,"sort_order":0}]');
 do $$ begin if (select count(*) from daily_plans)<>1 or (select count(*) from daily_tasks)<>1 then raise exception 'IDEMPOTENCY';end if;end $$;
+insert into body_measurements(user_id, local_date, weight_kg, waist_cm)
+  values (auth.uid(), current_date, 75.5, 90);
+do $$
+declare first_id uuid;
+begin
+  select id into first_id from user_programs where user_id = auth.uid() and status = 'active';
+  if public.continue_program(first_id) is not null then raise exception 'EARLY CONTINUATION'; end if;
+  update user_programs set start_date = current_date - 30 where id = first_id;
+  if public.continue_program(first_id) is null then raise exception 'CYCLE DID NOT CONTINUE'; end if;
+  if public.continue_program(first_id) is not null then raise exception 'DUPLICATE CONTINUATION'; end if;
+  if not exists (select 1 from user_programs where user_id = auth.uid() and cycle = 2
+    and status = 'active' and start_date = current_date) then raise exception 'WRONG NEXT CYCLE'; end if;
+end $$;
 select set_config('evolution_test.plan_id',(select id::text from daily_plans limit 1),true);
 select set_config('request.jwt.claim.sub','22222222-2222-4222-8222-222222222222',true);
 do $$ begin
+ if exists(select 1 from body_measurements) then raise exception 'MEASUREMENT LEAK';end if;
+ delete from body_measurements;if found then raise exception 'FOREIGN MEASUREMENT DELETION';end if;
+ begin insert into body_measurements(user_id,local_date,weight_kg) values('11111111-1111-4111-8111-111111111111',current_date,80);raise exception 'FOREIGN MEASUREMENT WRITE';exception when insufficient_privilege then null;end;
  if (select count(*) from daily_plans)<>0 or (select count(*) from daily_tasks)<>0 then raise exception 'PRIVATE DATA LEAK';end if;
  update daily_tasks set status='completed';if found then raise exception 'FOREIGN TASK UPDATE';end if;
  begin insert into daily_tasks(daily_plan_id,user_id,category,title,description,estimated_minutes,sort_order) values(current_setting('evolution_test.plan_id')::uuid,auth.uid(),'recovery','x','x',1,99);raise exception 'CHILD INJECTION';exception when foreign_key_violation then null;end;

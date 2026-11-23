@@ -382,3 +382,7 @@ button.day {
   min-height: 48px;
   overflow-wrap: anywhere;
 }
+
+.multiline {
+  white-space: pre-line;
+}
